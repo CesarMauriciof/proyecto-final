@@ -1,0 +1,71 @@
+{% extends 'base.html' %} {# Hereda de la plantilla base #}
+
+{% block title %}Detalle de Venta #{{ venta.id_venta }}{% endblock %} {# Título de la página con el ID de la venta #}
+
+{% block content %} {# Bloque de contenido #}
+    <h1 class="mb-4">Detalle de Venta #{{ venta.id_venta }}</h1>
+
+    {# Tarjeta para mostrar la información general de la venta #}
+    <div class="card mb-4">
+        <div class="card-header">
+            Información General de la Venta
+        </div>
+        <div class="card-body">
+            <p><strong>ID de Venta:</strong> {{ venta.id_venta }}</p>
+            <p><strong>Fecha de Venta:</strong> {{ venta.fecha_venta.strftime('%Y-%m-%d') }}</p> {# Fecha formateada #}
+            <p><strong>Total de Venta:</strong> {{ "%.2f"|format(venta.total) }}</p> {# Total formateado #}
+        </div>
+    </div>
+
+    {# Tarjeta para mostrar la información del cliente #}
+    <div class="card mb-4">
+        <div class="card-header">
+            Información del Cliente
+        </div>
+        <div class="card-body">
+            <p><strong>Nombre:</strong> {{ venta.cliente_nombre }} {{ venta.cliente_apellido }}</p>
+            {# Muestra email y teléfono si existen, de lo contrario "N/A" #}
+            <p><strong>Email:</strong> {{ venta.cliente_email if venta.cliente_email else 'N/A' }}</p>
+            <p><strong>Teléfono:</strong> {{ venta.cliente_telefono if venta.cliente_telefono else 'N/A' }}</p>
+        </div>
+    </div>
+
+    {# Tarjeta para mostrar los productos vendidos en esta transacción #}
+    <div class="card mb-4">
+        <div class="card-header">
+            Productos Vendidos
+        </div>
+        <div class="card-body">
+            {% if detalle_productos %} {# Verifica si hay productos en el detalle de la venta #}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {# Itera sobre los productos del detalle de la venta #}
+                        {% for item in detalle_productos %}
+                        <tr>
+                            <td>{{ item.producto_nombre }}</td> {# Nombre del producto #}
+                            <td>{{ item.producto_descripcion }}</td> {# Descripción del producto #}
+                            <td>{{ item.cantidad }}</td> {# Cantidad vendida #}
+                            <td>{{ "%.2f"|format(item.precio_unitario) }}</td> {# Precio unitario formateado #}
+                            <td>{{ "%.2f"|format(item.cantidad * item.precio_unitario) }}</td> {# Subtotal calculado y formateado #}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No hay productos registrados para esta venta.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Botón para volver a la lista de ventas #}
+    <a href="{{ url_for('ventas') }}" class="btn btn-secondary">Volver al Registro de Ventas</a>
+{% endblock %} {# Fin del bloque de contenido #}

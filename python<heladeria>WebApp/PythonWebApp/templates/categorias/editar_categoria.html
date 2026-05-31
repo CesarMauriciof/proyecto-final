@@ -1,0 +1,35 @@
+{% extends 'base.html' %} {# Hereda de la plantilla base #}
+
+{% block title %}Editar Categoría{% endblock %} {# Título de la página #}
+
+{% block content %} {# Bloque de contenido #}
+    <h1 class="mb-4">Editar Categoría</h1>
+    {# Muestra mensajes flash (éxito, error, etc.) si existen #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {# Formulario para enviar los datos actualizados de la categoría al backend #}
+    <form action="{{ url_for('editar_categoria', id_categoria=categoria[0]) }}" method="POST">
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            {# Campo de texto para el nombre, pre-llenado con el valor actual de la categoría #}
+            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ categoria[1] }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            {# Área de texto para la descripción, pre-llenada con el valor actual #}
+            <textarea class="form-control" id="descripcion" name="descripcion" rows="3">{{ categoria[2] }}</textarea>
+        </div>
+        {# Botón para enviar el formulario de actualización #}
+        <button type="submit" class="btn btn-primary">Actualizar Categoría</button>
+        {# Enlace para cancelar y volver a la lista de categorías #}
+        <a href="{{ url_for('categorias') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %} {# Fin del bloque de contenido #}
