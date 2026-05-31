@@ -1,0 +1,127 @@
+{% extends 'base.html' %} {# Hereda de la plantilla base #}
+
+{% block title %}Crear Nueva Venta{% endblock %} {# Título de la página #}
+
+{% block content %} {# Bloque de contenido #}
+    <h1 class="mb-4">Crear Nueva Venta</h1>
+
+    {# Muestra mensajes flash (éxito, error, etc.) si existen #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {# Formulario principal para registrar la venta #}
+    <form action="{{ url_for('crear_venta') }}" method="POST">
+        <div class="mb-3">
+            <label for="id_customer" class="form-label">Cliente</label>
+            <div class="input-group">
+                {# Dropdown para seleccionar un cliente existente #}
+                <select class="form-select" id="id_customer" name="id_customer" required>
+                    <option value="">Seleccione un cliente</option>
+                    {% for cliente in clientes %}
+                        <option value="{{ cliente[0] }}">{{ cliente[1] }} {{ cliente[2] }}</option>
+                    {% endfor %}
+                </select>
+                {# Botón para ir a crear un nuevo cliente, útil si el cliente no existe #}
+                <a href="{{ url_for('crear_cliente') }}" class="btn btn-outline-secondary" type="button">Crear Nuevo Cliente</a>
+            </div>
+        </div>
+
+        <hr>
+        <h3>Productos de la Venta</h3>
+        {# Contenedor donde se añadirán dinámicamente las filas de productos #}
+        <div id="productos-container">
+            {# Las filas de productos se insertarán aquí mediante JavaScript #}
+        </div>
+        {# Botón para añadir una nueva fila de producto al formulario #}
+        <button type="button" class="btn btn-info mb-3" id="add-product-btn">Añadir Producto</button>
+
+        <hr>
+        {# Botón para enviar el formulario y registrar la venta #}
+        <button type="submit" class="btn btn-success">Registrar Venta</button>
+        {# Enlace para cancelar y volver a la página de inicio #}
+        <a href="{{ url_for('inicio') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+
+    {# Script JavaScript para la funcionalidad dinámica de añadir/eliminar productos #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addProductBtn = document.getElementById('add-product-btn');
+            const productosContainer = document.getElementById('productos-container');
+            let productRowIndex = 0; // Contador para IDs únicos de filas de productos
+
+            // Función para añadir una nueva fila de producto al formulario
+            function addProductRow() {
+                const newRow = document.createElement('div');
+                newRow.classList.add('row', 'mb-3', 'align-items-end', 'product-row'); // Clases de Bootstrap para estilo
+                newRow.innerHTML = `
+                    <div class="col-md-6">
+                        <label for="producto_id_${productRowIndex}" class="form-label">Producto</label>
+                        <select class="form-select product-select" id="producto_id_${productRowIndex}" name="producto_id[]" required>
+                            <option value="">Seleccione un producto</option>
+                            {# Itera sobre los productos disponibles para poblar el dropdown #}
+                            {% for producto in productos %}
+                                <option value="{{ producto[0] }}" data-precio="{{ producto[2] }}" data-stock="{{ producto[3] }}">{{ producto[1] }} (Precio: {{ producto[2] }}, Stock: {{ producto[3] }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="cantidad_${productRowIndex}" class="form-label">Cantidad</label>
+                        {# Campo para la cantidad del producto, con validación mínima #}
+                        <input type="number" class="form-control cantidad-input" id="cantidad_${productRowIndex}" name="cantidad[]" min="1" value="1" required>
+                    </div>
+                    <div class="col-md-3">
+                        {# Botón para eliminar la fila de producto actual #}
+                        <button type="button" class="btn btn-danger remove-product-btn">Eliminar</button>
+                    </div>
+                `;
+                productosContainer.appendChild(newRow); // Añade la nueva fila al contenedor
+                productRowIndex++; // Incrementa el índice para la próxima fila
+            }
+
+            // Añade una fila de producto inicial al cargar la página
+            addProductRow();
+
+            // Event listener para el botón "Añadir Producto"
+            addProductBtn.addEventListener('click', addProductRow);
+
+            // Event listener delegado para eliminar filas de producto
+            productosContainer.addEventListener('click', function(event) {
+                if (event.target.classList.contains('remove-product-btn')) {
+                    // Asegura que al menos una fila de producto permanezca
+                    if (productosContainer.children.length > 1) {
+                        event.target.closest('.product-row').remove(); // Elimina la fila padre
+                    } else {
+                        alert('Debe haber al menos un producto en la venta.');
+                    }
+                }
+            });
+
+            // Validación opcional en el lado del cliente para el stock
+            productosContainer.addEventListener('change', function(event) {
+                if (event.target.classList.contains('product-select') || event.target.classList.contains('cantidad-input')) {
+                    const row = event.target.closest('.product-row');
+                    const productSelect = row.querySelector('.product-select');
+                    const cantidadInput = row.querySelector('.cantidad-input');
+
+                    const selectedOption = productSelect.options[productSelect.selectedIndex];
+                    const availableStock = parseInt(selectedOption.dataset.stock); // Obtiene el stock disponible del atributo data-stock
+                    const requestedQuantity = parseInt(cantidadInput.value);
+
+                    if (requestedQuantity > availableStock) {
+                        alert(`Stock insuficiente para este producto. Disponible: ${availableStock}`);
+                        // Restablece la cantidad al stock disponible o a 1 si el stock es 0
+                        cantidadInput.value = availableStock > 0 ? availableStock : 1;
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %} {# Fin del bloque de contenido #}

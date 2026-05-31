@@ -1,0 +1,55 @@
+{% extends 'base.html' %} {# Hereda de la plantilla base #}
+
+{% block title %}Clientes{% endblock %} {# Título de la página #}
+
+{% block content %} {# Bloque de contenido #}
+    <h1 class="mb-4">Lista de Clientes</h1>
+    {# Botón para navegar a la página de creación de clientes #}
+    <a href="{{ url_for('crear_cliente') }}" class="btn btn-primary mb-3">Crear Nuevo Cliente</a>
+
+    {# Muestra mensajes flash (éxito, error, etc.) si existen #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {# Tabla para mostrar los clientes #}
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Acciones</th> {# Columna para botones de acción #}
+            </tr>
+        </thead>
+        <tbody>
+            {# Itera sobre la lista de clientes recibida del backend #}
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente[0] }}</td> {# ID del cliente #}
+                <td>{{ cliente[1] }}</td> {# Nombre del cliente #}
+                <td>{{ cliente[2] }}</td> {# Apellido del cliente #}
+                <td>{{ cliente[3] }}</td> {# Teléfono del cliente #}
+                <td>{{ cliente[4] }}</td> {# Email del cliente #}
+                <td>
+                    {# Enlace para editar el cliente, pasando su ID #}
+                    <a href="{{ url_for('editar_cliente', id_customer=cliente[0]) }}" class="btn btn-warning btn-sm">Editar</a>
+                    {# Formulario para eliminar el cliente, usando POST y confirmación JS #}
+                    <form action="{{ url_for('eliminar_cliente', id_customer=cliente[0]) }}" method="POST" style="display:inline-block;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar este cliente?');">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %} {# Fin del bloque de contenido #}
