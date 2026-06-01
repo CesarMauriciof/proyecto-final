@@ -1,0 +1,50 @@
+{% extends 'base.html' %} {# Hereda de la plantilla base #}
+
+{% block title %}Ventas{% endblock %} {# Título de la página #}
+
+{% block content %} {# Bloque de contenido #}
+    <h1 class="mb-4">Registro de Ventas</h1>
+    {# Botón para navegar a la página de creación de ventas #}
+    <a href="{{ url_for('crear_venta') }}" class="btn btn-primary mb-3">Registrar Nueva Venta</a>
+
+    {# Muestra mensajes flash (éxito, error, etc.) si existen #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {# Tabla para mostrar el registro de ventas #}
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID Venta</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Acciones</th> {# Columna para botones de acción #}
+            </tr>
+        </thead>
+        <tbody>
+            {# Itera sobre la lista de ventas recibida del backend #}
+            {% for venta in ventas %}
+            <tr>
+                <td>{{ venta[0] }}</td> {# ID de la venta #}
+                <td>{{ venta[1].strftime('%Y-%m-%d') }}</td> {# Fecha de la venta, formateada #}
+                <td>{{ venta[2] }} {{ venta[3] }}</td> {# Nombre y apellido del cliente #}
+                <td>{{ "%.2f"|format(venta[4]) }}</td> {# Total de la venta, formateado a 2 decimales #}
+                <td>
+                    {# Enlace para ver el detalle de la venta, pasando su ID #}
+                    <a href="{{ url_for('detalle_venta', id_venta=venta[0]) }}" class="btn btn-info btn-sm">Ver Detalle</a>
+                    {# Aquí se podría añadir un formulario para eliminar la venta si fuera necesario #}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %} {# Fin del bloque de contenido #}
