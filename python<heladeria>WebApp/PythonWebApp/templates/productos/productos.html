@@ -1,0 +1,59 @@
+{% extends 'base.html' %} {# Hereda de la plantilla base #}
+
+{% block title %}Productos{% endblock %} {# Título de la página #}
+
+{% block content %} {# Bloque de contenido #}
+    <h1 class="mb-4">Lista de Productos</h1>
+    {# Botón para navegar a la página de creación de productos #}
+    <a href="{{ url_for('crear_producto') }}" class="btn btn-primary mb-3">Crear Nuevo Producto</a>
+
+    {# Muestra mensajes flash (éxito, error, etc.) si existen #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {# Tabla para mostrar los productos #}
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Categoría</th>
+                <th>Proveedor</th>
+                <th>Acciones</th> {# Columna para botones de acción #}
+            </tr>
+        </thead>
+        <tbody>
+            {# Itera sobre la lista de productos recibida del backend #}
+            {% for producto in productos %}
+            <tr>
+                <td>{{ producto[0] }}</td> {# ID del producto #}
+                <td>{{ producto[1] }}</td> {# Nombre del producto #}
+                <td>{{ producto[2] }}</td> {# Descripción del producto #}
+                <td>{{ producto[3] }}</td> {# Precio del producto #}
+                <td>{{ producto[4] }}</td> {# Stock del producto #}
+                <td>{{ producto[5] }}</td> {# Nombre de la categoría (obtenido por JOIN) #}
+                <td>{{ producto[6] }}</td> {# Nombre de la empresa proveedora (obtenido por JOIN) #}
+                <td>
+                    {# Enlace para editar el producto, pasando su ID #}
+                    <a href="{{ url_for('editar_producto', id_producto=producto[0]) }}" class="btn btn-warning btn-sm">Editar</a>
+                    {# Formulario para eliminar el producto, usando POST y confirmación JS #}
+                    <form action="{{ url_for('eliminar_producto', id_producto=producto[0]) }}" method="POST" style="display:inline-block;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar este producto?');">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %} {# Fin del bloque de contenido #}

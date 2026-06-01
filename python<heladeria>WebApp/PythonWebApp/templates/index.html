@@ -1,0 +1,15 @@
+{% extends 'base.html' %} {# Hereda de la plantilla base para mantener la estructura #}
+
+{% block title %}Inicio{% endblock %} {# Define el título específico para esta página #}
+
+{% block content %} {# Inicia el bloque de contenido #}
+    {# Componente Jumbotron de Bootstrap para una bienvenida destacada #}
+    <div class="jumbotron text-center">
+        <h1 class="display-4">¡Bienvenido a la Heladería App!</h1>
+        <p class="lead">Gestiona tus clientes, proveedores, productos y ventas de forma sencilla.</p>
+        <hr class="my-4"> {# Línea divisoria #}
+        <p>Utiliza la barra de navegación superior para acceder a las diferentes secciones de la aplicación.</p>
+        {# Botón principal para iniciar una nueva venta #}
+        <a class="btn btn-primary btn-lg" href="{{ url_for('crear_venta') }}" role="button">Realizar Nueva Venta</a>
+    </div>
+{% endblock %} {# Finaliza el bloque de contenido #}

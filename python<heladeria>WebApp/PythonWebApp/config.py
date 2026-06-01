@@ -1,5 +1,5 @@
 class Config:
     MYSQL_HOST = 'localhost'
-    MYSQL_USER = 'admin'
-    MYSQL_PASSWORD = 'Kei27'
-    MYSQL_DB = 'flaskdb'
+    MYSQL_USER = 'root'
+    MYSQL_PASSWORD = 'r00t123'
+    MYSQL_DB = 'heladeria_db'

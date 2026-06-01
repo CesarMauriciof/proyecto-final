@@ -1,0 +1,45 @@
+{% extends 'base.html' %} {# Hereda de la plantilla base #}
+
+{% block title %}Crear Cliente{% endblock %} {# Título de la página #}
+
+{% block content %} {# Bloque de contenido #}
+    <h1 class="mb-4">Crear Nuevo Cliente</h1>
+    {# Muestra mensajes flash (éxito, error, etc.) si existen #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {# Formulario para enviar los datos del nuevo cliente al backend #}
+    <form action="{{ url_for('crear_cliente') }}" method="POST">
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            {# Campo de texto para el nombre, 'required' para validación HTML5. El 'value' mantiene el dato si hubo un error #}
+            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ nombre if nombre else '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="apellido" class="form-label">Apellido</label>
+            {# Campo de texto para el apellido, 'required' para validación HTML5. El 'value' mantiene el dato si hubo un error #}
+            <input type="text" class="form-control" id="apellido" name="apellido" value="{{ apellido if apellido else '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            {# Campo de texto para el teléfono. El 'value' mantiene el dato si hubo un error #}
+            <input type="text" class="form-control" id="telefono" name="telefono" value="{{ telefono if telefono else '' }}">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            {# Campo de texto para el email. El 'value' mantiene el dato si hubo un error #}
+            <input type="email" class="form-control" id="email" name="email" value="{{ email if email else '' }}">
+        </div>
+        {# Botón para enviar el formulario #}
+        <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+        {# Enlace para cancelar y volver a la lista de clientes #}
+        <a href="{{ url_for('clientes') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %} {# Fin del bloque de contenido #}
