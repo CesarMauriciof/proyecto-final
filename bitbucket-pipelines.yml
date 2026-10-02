@@ -1,10 +1,10 @@
-image: python:3.10
+image: alpine/git:latest
 
 pipelines:
   branches:
-    main: # O cambia por master si tu rama principal se llama así
+    main:
       - step:
           name: Sincronizar Proyecto de IA en GitHub
           script:
-            - git remote add github git@github.com:CesarMauriciof/https://github.com/CesarMauriciof/proyecto-final
+            - git remote add github git@github.com:CesarMauriciof/proyecto-final.git
             - git push github main:main --force --tags
