@@ -1,0 +1,10 @@
+image: alpine/git:latest
+
+pipelines:
+  branches:
+    main: # O cambia a 'master' si tu rama se llama así
+      - step:
+          name: Sincronizar Proyecto Pasado en GitHub
+          script:
+            - git remote add github git@github.com:CesarMauriciof/https://github.com/CesarMauriciof/proyecto-final
+            - git push github main:main --force --tags
