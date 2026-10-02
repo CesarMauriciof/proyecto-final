@@ -1,6 +1,7 @@
 image: alpine/git:latest
 
 pipelines:
+
   branches:
     main:
       - step:

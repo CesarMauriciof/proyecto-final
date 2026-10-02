@@ -1,0 +1,55 @@
+{% extends 'base.html' %} {# Hereda de la plantilla base #}
+
+{% block title %}Proveedores{% endblock %} {# Título de la página #}
+
+{% block content %} {# Bloque de contenido #}
+    <h1 class="mb-4">Lista de Proveedores</h1>
+    {# Botón para navegar a la página de creación de proveedores #}
+    <a href="{{ url_for('crear_proveedor') }}" class="btn btn-primary mb-3">Crear Nuevo Proveedor</a>
+
+    {# Muestra mensajes flash (éxito, error, etc.) si existen #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {# Tabla para mostrar los proveedores #}
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre Empresa</th>
+                <th>Contacto</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Acciones</th> {# Columna para botones de acción #}
+            </tr>
+        </thead>
+        <tbody>
+            {# Itera sobre la lista de proveedores recibida del backend #}
+            {% for proveedor in proveedores %}
+            <tr>
+                <td>{{ proveedor[0] }}</td> {# ID del proveedor #}
+                <td>{{ proveedor[1] }}</td> {# Nombre de la empresa #}
+                <td>{{ proveedor[2] }}</td> {# Contacto del proveedor #}
+                <td>{{ proveedor[3] }}</td> {# Teléfono del proveedor #}
+                <td>{{ proveedor[4] }}</td> {# Email del proveedor #}
+                <td>
+                    {# Enlace para editar el proveedor, pasando su ID #}
+                    <a href="{{ url_for('editar_proveedor', id_proveedor=proveedor[0]) }}" class="btn btn-warning btn-sm">Editar</a>
+                    {# Formulario para eliminar el proveedor, usando POST y confirmación JS #}
+                    <form action="{{ url_for('eliminar_proveedor', id_proveedor=proveedor[0]) }}" method="POST" style="display:inline-block;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar este proveedor?');">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %} {# Fin del bloque de contenido #}

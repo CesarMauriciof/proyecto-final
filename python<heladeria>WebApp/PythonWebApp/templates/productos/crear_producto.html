@@ -1,0 +1,67 @@
+{% extends 'base.html' %} {# Hereda de la plantilla base #}
+
+{% block title %}Crear Producto{% endblock %} {# Título de la página #}
+
+{% block content %} {# Bloque de contenido #}
+    <h1 class="mb-4">Crear Nuevo Producto</h1>
+    {# Muestra mensajes flash (éxito, error, etc.) si existen #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {# Formulario para enviar los datos del nuevo producto al backend #}
+    <form action="{{ url_for('crear_producto') }}" method="POST">
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            {# Campo de texto para el nombre, 'required' para validación HTML5. El 'value' mantiene el dato si hubo un error #}
+            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ nombre if nombre else '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            {# Área de texto para la descripción. El 'value' mantiene el dato si hubo un error #}
+            <textarea class="form-control" id="descripcion" name="descripcion" rows="3">{{ descripcion if descripcion else '' }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="precio" class="form-label">Precio</label>
+            {# Campo numérico para el precio, permite decimales. El 'value' mantiene el dato si hubo un error #}
+            <input type="number" step="0.01" class="form-control" id="precio" name="precio" value="{{ precio if precio else '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="stock" class="form-label">Stock</label>
+            {# Campo numérico para el stock. El 'value' mantiene el dato si hubo un error #}
+            <input type="number" class="form-control" id="stock" name="stock" value="{{ stock if stock else '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="id_categoria" class="form-label">Categoría</label>
+            {# Dropdown para seleccionar la categoría, poblado con datos del backend #}
+            <select class="form-select" id="id_categoria" name="id_categoria" required>
+                <option value="">Seleccione una categoría</option> {# Opción por defecto #}
+                {% for categoria in categorias %}
+                    {# Marca la opción como seleccionada si coincide con el valor enviado previamente #}
+                    <option value="{{ categoria[0] }}" {% if id_categoria and id_categoria|int == categoria[0] %}selected{% endif %}>{{ categoria[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="id_proveedor" class="form-label">Proveedor</label>
+            {# Dropdown para seleccionar el proveedor, poblado con datos del backend #}
+            <select class="form-select" id="id_proveedor" name="id_proveedor" required>
+                <option value="">Seleccione un proveedor</option> {# Opción por defecto #}
+                {% for proveedor in proveedores %}
+                    {# Marca la opción como seleccionada si coincide con el valor enviado previamente #}
+                    <option value="{{ proveedor[0] }}" {% if id_proveedor and id_proveedor|int == proveedor[0] %}selected{% endif %}>{{ proveedor[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {# Botón para enviar el formulario #}
+        <button type="submit" class="btn btn-primary">Guardar Producto</button>
+        {# Enlace para cancelar y volver a la lista de productos #}
+        <a href="{{ url_for('productos') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %} {# Fin del bloque de contenido #}
