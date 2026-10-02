@@ -4,7 +4,13 @@ pipelines:
   branches:
     main:
       - step:
-          name: Sincronizar Proyecto de IA en GitHub
+          name: Sincronizar Rama Main en GitHub
           script:
             - git remote add github git@github.com:CesarMauriciof/proyecto-final.git
             - git push github main:main --force --tags
+    develop:
+      - step:
+          name: Sincronizar Rama Develop en GitHub
+          script:
+            - git remote add github git@github.com:CesarMauriciof/proyecto-final.git
+            - git push github develop:develop --force --tags
